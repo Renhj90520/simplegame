@@ -37,7 +37,7 @@ Player.prototype.update = (function() {
     var r = this._aggregateRotation
       .multiply(this.inverseLook)
       .multiply(this.mouseSensitivity)
-      .multiplyScale(delta)
+      .multiplyScalar(delta)
       .add(this.rotation);
     if (this.constrainVerticalLook) {
       r.x = Math.max(Math.PI / -2, Math.min(Math.PI / 2, r.x));
@@ -52,7 +52,7 @@ Player.prototype.update = (function() {
     if (this.moveDirection.BACKWARD) this.velocity.z += Player.SPEED;
     if (this.moveDirection.RIGHT) this.velocity.x += Player.SPEED;
 
-    halfAccel.copy(this.acceleration).multiplyScale(delta / 2);
+    halfAccel.copy(this.acceleration).multiplyScalar(delta / 2);
     this.velocity.add(halfAccel);
     var squaredManhattanVelocity =
       this.velocity.x * this.velocity.x + this.velocity.z * this.velocity.z;
