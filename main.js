@@ -268,6 +268,7 @@ function animate() {
 }
 
 var INV_MAX_FPS = 1 / 100;
+
 function update(delta) {
   player.update(delta);
   checkPlayerCollision(player);
@@ -301,6 +302,7 @@ function update(delta) {
 
 var checkBulletCollision = (function() {
   var cell = new MapCell();
+
   function removeBullet(bullet, i) {
     scene.remove(bullet);
     deadBulletPool.push(bullet);
@@ -372,6 +374,7 @@ var shoot = (function() {
     scene.add(bullet);
   };
 })();
+
 function move(bot) {
   bot.rotation.y = Math.random() * Math.PI * 2;
   var leftBias = bot.moveDirection.LEFT ? -0.1 : 0.1;
@@ -436,6 +439,7 @@ function moveOutSide(meshPosition, playerPosition) {
   }
 }
 var pause = true;
+
 function startAnimating() {
   if (pause) {
     pause = false;
@@ -519,12 +523,31 @@ document.addEventListener(
   false
 );
 document.addEventListener("click", function(event) {
+  if (!pause) {
+    event.preventDefault();
+    shoot();
+  }
+});
+document.getElementById("start").addEventListener("click", function() {
   if (BigScreen.enabled) {
-    BigScreen.request(document.body, function() {
-      PL.requestPointerLock(document.body, function() {
-        startAnimating();
-      });
-    });
+    var startEl = this;
+    var crosshair = document.getElementById("crosshair");
+    crosshair.className = "hidden";
+    BigScreen.request(
+      document.body,
+      function() {
+        PL.requestPointerLock(document.body, function() {
+          startEl.className = "hidden";
+          crosshair.className = "";
+          startAnimating();
+        });
+      },
+      function() {
+        startEl.className = "exited";
+        crosshair.className = "hidden";
+        stopAnimating();
+      }
+    );
   }
 });
 setUp();
